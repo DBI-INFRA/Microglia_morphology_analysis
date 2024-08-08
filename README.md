@@ -48,7 +48,7 @@ The script generates three Excel tables for each analyzed image and region:
 Use the script `microglia_morphology_single_image.groovy` and follow these instructions if you only want to analyze a single image or to find good parameters for cell detection and thresholding before running the analysis on multiple images. Running the script in batch-mode for multiple images is explained
  [here](#usage-guide-analyzing-multiple-images-batch-mode).
 
-1. Open Project
+1. **Open Project**
     - **Case A) First time setup** (Setting up a new QuPath project)
         1. Create a new folder to store the QuPath project
         2. Open QuPath, then go to the "Project" tab in the left panel, then press "Create Project"
@@ -57,12 +57,12 @@ Use the script `microglia_morphology_single_image.groovy` and follow these instr
         1. Open QuPath, then go to the "Project" tab in the left panel, then press "Open Project"
         2. Select your existing project folder, open this folder, then select the file called "project.qpproj" and press "open"
 
-2. Add Images to Project
+2. **Add Images to Project**
     1. Drag & Drop images into the left panel under "Project" (this will open another window, confirm by pressing "Import").
     2. A window with "Set image type" will pop up. Select "Brightfield H-DAB", then press "Apply"
     3. The images should then appear in this panel "Image List". An image can be opened by double-clicking on its name
 
-3. Draw Annotation Region
+3. **Draw Annotation Region**
     1. Zoom into the region of interest, then select one of the buttons with red forms (under the uppermost main menu bar). These are the annotation tools. The 6th from the left, the "brush tool", is especially useful, since it allows to freely draw
     2. Draw annotation region (Having selected one of the drawing tool buttons, just left-click with the mouse to draw). Here are some tips:
         - **Change brush size:** The size of the brush adapts according to the magnification level, i.e. if you zoom in, the brush effectively paints small regions - while zoomed out it can quickly mark large areas
@@ -71,11 +71,11 @@ Use the script `microglia_morphology_single_image.groovy` and follow these instr
         - **Erase parts of annotation:** Holding down the Alt-key while using the brush causes it to ‘subtract’ regions, basically acting as an eraser
         - For further info & tips, check the official [QuPath Annotation Documentation](https://qupath.readthedocs.io/en/0.3/docs/starting/annotating.html)
 
-4. Open the script inside QuPath
+4. **Open the script inside QuPath**
     1. In the QuPath main menu, click "Automate" -> "Script Editor" to open the script editor.
     2. Inside the Script editor, press "File" -> "Open", then navigate to the script file location and select the script file (Alternatively, you can drag & drop the script file directly into the left panel ("Scripts") of the script editor)
 
-5. Run script
+5. **Run script**
     1. Select & open the script from the list of scripts in the left panel
     2. Choose a directory where all results should be saved:
         - Create a results folder, copy its path, and insert the path in line 117 (i.e., `excel_save_path = "<your-copied-path/results>"`)
