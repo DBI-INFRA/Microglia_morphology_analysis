@@ -1,37 +1,31 @@
 # Microglia Morphology Analysis
 
+## Overview
 
-These Automated analysis of the morphology of microglia cells in H-DAB images using QuPath and ImageJ
-
-
-////
-//// Goals:   	- Given a DAB-stained-Image, detect all microglia soma body cells inside an annotated region and
-////              analyse their morphology (number of branches, number of junctions...). This is done by 
-////              first detecting the microglia cells in QuPath, and then sending a window around each cell
-////              to ImageJ for further processing, skeletonization & skeleton analysis
-////            - Send the resulting cell skeletons back to QuPath as an annotation overlay 
-////            - Save morphology analysis results in an excel table & perform further statistical analysis
-////
-//// Required:  Brightfield Image with standard stain color vectors (DAB & Hematoxylin)
-////            ImageJ Plugins: Skeletonization, Auto Local Thresholding (already included in the Fiji-version)
-////
-//// Results: This script creates 3 excel tables per run:
-////          - <save_name>_full_skeletonization_results: The full, raw skeletonization results produced in ImageJ (including the number
-////                                                       of branches, junctions, average branch length...). Each row represents the
-////                                                       skeletonization results for a different, individual soma body cell.
-////          - <save_name>_statistics_summary: Statistics summary file computed from the raw skeletonization results. Contains the mean value
-////                                            for each column (e.g. the mean number of branches), as well as the annotation area measured
-////                                            in pixels & microns, and the total number of detected soma body cells
-////          - <save_name>_parameters: All functional parameters (cells_min_area, gaussian_sigma..) and their chosen values.
-////                                    (This table can be used to later reproduce the results for any given analysis, and may also
-////                                    be mentioned in the publication to give technical details on the analysis method used)
-////
-
+This script automates the analysis of microglia cell morphology in H-DAB stained images using QuPath and ImageJ. It identifies microglia soma body cells within a user-defined annotated region and analyzes their morphology, including metrics such as the number of branches and junctions. The script saves the results in Excel tables for further statistical analysis and overlays the resulting cell skeletons as annotations in QuPath, enabling visual verification of the computations. The soma body cell detection and annotation management are handled by QuPath, while subsequent image processing, thresholding, skeletonization and analysis are performed by ImageJ.
 
 <div style="text-align: center;">
     <img src="results_figure.png" width="400"/>
-    <p>TODO</p>
+    <p><b>Figure</b>: The process workflow - From the input H-DAB image to the resulting skeleton overlay and morphology table.</p>
 </div>
+
+
+### Requirements
+
+- **Image Type**: Brightfield images with standard stain color vectors (DAB & Hematoxylin).
+- **Software**:
+    - **QuPath**: For cell detection and annotation management
+    - **ImageJ/Fiji**: For image preprocessing, thresholding, skeletonization and analysis. Specifically, the plugins for Skeletonization and Auto Local Thresholding (included in the Fiji version of ImageJ)
+
+
+### Results
+
+The script generates three Excel tables for each analyzed image and region:
+
+- **Full Skeletonization Results**: Contains the raw skeletonization data for each detected microglia cell, including metrics like the number of branches, junctions, and average branch length. Each table row corresponds to an individual soma body cell.
+- **Statistics Summary**: Provides a summary of the mean values for all morphological metrics, the total annotation area (in pixels and microns), and the total count of detected soma body cells.
+- **Parameters Table**: Lists all functional parameters (e.g., cells_min_area, gaussian_sigma) used in the analysis, along with their specific values. This table ensures reproducibility and can be referenced in publications to provide the technical details of the analysis.
+                                         
 
 ## Installation
 
@@ -97,18 +91,22 @@ Use the script called `microglia_morphology_single_image.groovy` and follow thes
     8. While the script is running, you can see what is currently computed by viewing the log in the lower part of the script editor. The last printed log is "INFO: DONE!", this signalizes that the script is done computing. You can now open & view the resulting Excel tables in your results folder (Note: You may have to close QuPath first in order to edit the Excel tables)
 
 
-**Closing Remarks:**
-- The script internally switches the DAB & Hematoxylin-channel to run the QuPath cell detection algorithm (since it is only implemented for the Hematoxylin channel, but we need to run it on the DAB-channel)
-- If any errors occur or something is unclear, feel free to contact me under jume@di.ku.dk
-
-
 ## Usage Guide: Analyzing multiple images (batch mode)
-Use the script `microglia_morphology_batchmode.groovy` if you want to analyze multiple images at once using QuPath's batch-mode. Note that it is advised to search for good parameters first (using the script for single image analysis decribed [above](#usage-guide-single-image-analysis)) before running the batchmode on multiple images.
-The usage is almost identical to the single image analysis as decribed [above](#usage-guide-single-image-analysis), with some adjustments:
+Use the script `microglia_morphology_batchmode.groovy` if you want to analyze multiple images at once using QuPath's batch-mode. Before running the batch analysis for multiple images, it’s recommended to first determine the optimal parameters using the script for single image analysis as described [above](#usage-guide-single-image-analysis).
 
-- You have to add all images to your QuPath project folder for which you want to run the analysis (see point 2 in the [single image analysis guide](#usage-guide-single-image-analysis))
-- No name for the resulting excel file table needs to be given, you only need to provide the path to a folder where all results for all images should be saved (line 115: `excel_save_path = "<path-to-your-datafolder>/Results"`)
-- The batchmode-version of the script expects pre-made annotations with a name for each image. This means that before running the script, you need to open each image and add it to your QuPath project, draw annotations for the regions you want to analyze, and then give these annotations a name. 
-    - You can name annotations by right-clicking into the selected annotation, then pressing "Annotations" > "Set properties". This will open a window where you can type in a name; press "Apply" when you are done. 
-- Remember to change the parameters in lines 119 - 145
-"Microglia_Img["+ imageName +"]_region[" + annotation_dv.getName() + "]"
+The process for batch analysis is almost identical to the [single image analysis](#usage-guide-single-image-analysis), with the following adjustments:
+
+- **Add Images to Project**: Ensure that all images you want to analyze are added to your QuPath project (see point 2 in the [single image analysis guide](#usage-guide-single-image-analysis)).
+- **Output Path**: You don’t need to specify a name for the resulting Excel file(s). Instead, provide the path to a folder where the results for all images should be saved (line 115: `excel_save_path = "<path-to-your-datafolder>/Results"`).
+- **Annotations**: The batch-mode script expects pre-made annotations that are named for each image. Before running the script:
+    - Add each image it to your QuPath project, open it and draw annotations for the regions you want to analyze.
+    - Name each annotation by first selecting (double-click) then right-clicking on it, selecting "Annotations" > "Set properties," and typing a name in the window that appears. Press "Apply" when done.
+    - Note: You can create multiple annotations for each image. The script will analyze each annotation region per image individually.
+- **Parameter Adjustment**: Update the parameters in lines 119-145 according to the optimal settings you identified while testing the script on a single image using `microglia_morphology_single_image.groovy`.
+- **Run the Script**: Once you’ve added all images, drawn and named annotations, and updated the parameters, you’re ready to run the script. Depending on the size of your images and annotation regions, the analysis may take some time. Once the analysis is complete, you’ll find all results in the specified results folder (line 115). The script will create a separate folder for each image and annotation region in the following format: *YYYY-MM-DD_Microglia_Img[image-name]_region[annotation-name]*, containing three Excel tables (used parameters, full raw skeletonization results, statistics summary).
+
+---
+
+**Closing Remarks:**
+- The scripts internally switch the DAB & Hematoxylin-channel to run the QuPath cell detection algorithm (since it is only implemented for the Hematoxylin channel, but we need to run it on the DAB-channel)
+- If any errors occur or something is unclear, feel free to contact me under jume@di.ku.dk
